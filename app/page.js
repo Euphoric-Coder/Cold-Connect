@@ -1,3 +1,4 @@
+import CallToAction from '@/components/CTA'
 import FeaturesSection from '@/components/Features'
 import HeroSection from '@/components/HeroSection'
 import HowItWorks from '@/components/HowItWorks'
@@ -9,6 +10,7 @@ const page = () => {
       <HeroSection />
       <FeaturesSection />
       <HowItWorks />
+      <CallToAction />
     </div>
   )
 }
