@@ -80,7 +80,7 @@ const HomePage = () => {
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <Button
-                  to="/generator"
+                  to="/generate"
                   variant="primary"
                   size="md"
                   icon={Send}

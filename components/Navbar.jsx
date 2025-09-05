@@ -12,6 +12,7 @@ import {
 import Button from "./Button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ModeToggle } from "./ThemeButton";
 
 const Navbar = () => {
   const { user, isSignedIn } = useUser();
@@ -81,6 +82,7 @@ const Navbar = () => {
           {/* Actions */}
           <div className="flex gap-2 items-center">
             {/* Theme Toggle */}
+            <ModeToggle />
 
             <UserButton />
 
