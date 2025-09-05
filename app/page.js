@@ -1,18 +1,15 @@
-import CallToAction from '@/components/CTA'
-import FeaturesSection from '@/components/Features'
-import HeroSection from '@/components/HeroSection'
-import HowItWorks from '@/components/HowItWorks'
-import React from 'react'
+import HomePage from "@/components/HomePage";
+import Layout from "@/components/Layout";
+import React from "react";
 
 const page = () => {
   return (
     <div>
-      <HeroSection />
-      <FeaturesSection />
-      <HowItWorks />
-      <CallToAction />
+      <Layout>
+        <HomePage />
+      </Layout>
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;
