@@ -1,5 +1,6 @@
 "use client";
 
+import { sendEmail } from "@/lib/sendEmail";
 import { Mail } from "lucide-react";
 
 export default function HeroSection() {
@@ -20,7 +21,16 @@ export default function HeroSection() {
             out.
           </p>
           <div className="mt-6 flex flex-wrap gap-4 justify-center md:justify-start">
-            <button className="flex items-center gap-2 px-6 py-3 rounded-md font-medium text-white bg-gradient-to-r from-purple-500 to-teal-400 shadow-md hover:opacity-90 transition">
+            <button
+              className="flex items-center gap-2 px-6 py-3 rounded-md font-medium text-white bg-gradient-to-r from-purple-500 to-teal-400 shadow-md hover:opacity-90 transition"
+              onClick={() =>
+                sendEmail(
+                  "deydsagnik32@gmail.com", // recipient email
+                  "Application for Frontend Role", // subject
+                  `Hello,\n\nI’m Sagnik and I’d like to apply for the frontend developer position at your company.\n\nRegards,\nSagnik`
+                )
+              }
+            >
               <Mail size={18} />
               Start Generating Emails
             </button>

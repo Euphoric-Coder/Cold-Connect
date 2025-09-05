@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@browserbasehq/sdk": "^2.6.0",
+    "@clerk/backend": "^2.12.1",
+    "@clerk/clerk-sdk-node": "^4.13.23",
     "@clerk/nextjs": "^6.31.4",
     "@langchain/community": "^0.3.53",
     "@langchain/core": "^0.3.72",
@@ -17,6 +19,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "googleapis": "^159.0.0",
     "lucide-react": "^0.541.0",
     "next": "14.2.32",
     "react": "^18",
