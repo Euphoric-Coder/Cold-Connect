@@ -9,7 +9,7 @@ load_dotenv()
 # CONFIG
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 if not GITHUB_TOKEN:
-    raise ValueError("⚠️ Please set your GITHUB_TOKEN in the .env file")
+    raise ValueError("Please set your GITHUB_TOKEN in the .env file")
 
 BASE_URL = "https://api.github.com"
 HEADERS = {"Authorization": f"token {GITHUB_TOKEN}"}
