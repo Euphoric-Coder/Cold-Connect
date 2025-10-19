@@ -11,7 +11,7 @@ import {
   Shield,
 } from "lucide-react";
 import Button from "../../components/Button";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import FileUpload from "../../components/FileUpload";
 import { useUser } from "@clerk/nextjs";
@@ -29,6 +29,9 @@ const OnboardingPage = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const updateUser = useMutation(api.users.updateUser);
+  const status = useQuery(api.users.onboardingStatus, {
+    email: user?.emailAddresses[0]?.emailAddress,
+  });
 
   useEffect(() => {
     if (user) {
@@ -121,6 +124,9 @@ const OnboardingPage = () => {
     }
   };
 
+  if(status === true) {
+    return <div>Please complete the onboarding process.</div>
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50/30 via-white to-secondary-50/30 dark:from-primary-950/30 dark:via-dark-900 dark:to-secondary-950/30 pt-24 pb-16">
       {/* Background Pattern */}

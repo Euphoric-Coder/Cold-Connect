@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 export const updateUser = mutation({
   args: {
@@ -37,5 +37,26 @@ export const updateUser = mutation({
     });
 
     return newUserId;
+  },
+});
+
+export const onboardingStatus = query({
+  args: {
+    email: v.string(),
+  },
+  handler: async (ctx, { email }) => {
+    // Find the user by email
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .first();
+
+    // If no record found, assume not onboarded
+    if (!user) {
+      return false;
+    }
+
+    // Return onboarding status
+    return user.hasOnboarded;
   },
 });

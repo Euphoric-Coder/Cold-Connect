@@ -2,12 +2,15 @@
 
 import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useEffect } from "react";
 
 export default function SyncUser() {
   const { user } = useUser();
   const updateUser = useMutation(api.users.updateUser);
+  const status = useQuery(api.users.onboardingStatus, {
+    email: user?.emailAddresses[0]?.emailAddress,
+  });
 
   useEffect(() => {
     if (!user) return;
@@ -19,7 +22,7 @@ export default function SyncUser() {
           email: user.emailAddresses[0]?.emailAddress ?? "",
           resumeURL: user.publicMetadata?.resumeURL ?? undefined,
           githubURL: user.publicMetadata?.githubURL ?? undefined,
-          hasOnboarded: user.publicMetadata?.hasOnboarded ?? false,
+          hasOnboarded: status,
         });
       } catch (error) {
         console.error("Error syncing user:", error);
