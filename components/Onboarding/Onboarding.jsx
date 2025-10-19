@@ -112,7 +112,7 @@ const OnboardingPage = () => {
         hasOnboarded: true,
       });
 
-      router.push("/generator");
+      // router.push("/dashboard");
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {

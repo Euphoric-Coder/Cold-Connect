@@ -19,8 +19,11 @@ const FileUpload = ({
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
+  // Convex Mutations
   const generateUploadUrl = useMutation(api.uploadResume.generateUploadUrl);
   const addFile = useMutation(api.uploadResume.addFile);
+  const getFileURL = useMutation(api.storeFile.getFileURL);
+  const deleteFile = useMutation(api.resumeDelete.deleteById);
 
   const validateFile = (file) => {
     if (!file.type.match("application/pdf")) {
@@ -38,7 +41,11 @@ const FileUpload = ({
   const uploadToConvex = async (selectedFile) => {
     try {
       setUploading(true);
+
+      // Step 1: Generate upload URL from Convex
       const uploadUrl = await generateUploadUrl();
+
+      // Step 2: Upload file directly to Convex Storage
       const res = await fetch(uploadUrl, {
         method: "POST",
         headers: { "Content-Type": selectedFile.type },
@@ -46,15 +53,10 @@ const FileUpload = ({
       });
       const { storageId } = await res.json();
 
-      // Generate permanent URL for access
-      const getFileURL = await fetch("/api/convex/storeFile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storageId }),
-      });
-      const { fileURL } = await getFileURL.json();
+      // Step 3: Get permanent public URL via Convex mutation
+      const fileURL = await getFileURL({ storageId });
 
-      // Store metadata in resumeFiles table
+      // Step 4: Store metadata in resumeFiles table
       await addFile({
         fileId: crypto.randomUUID(),
         storageId,
@@ -66,7 +68,7 @@ const FileUpload = ({
       setUploading(false);
       return { storageId, fileURL };
     } catch (err) {
-      console.error("Upload error:", err);
+      console.error("Error uploading file:", err);
       setError("Error uploading file. Try again.");
       setUploading(false);
       return null;
@@ -75,10 +77,11 @@ const FileUpload = ({
 
   const handleFile = async (selectedFile) => {
     if (validateFile(selectedFile)) {
-      setFile(selectedFile);
       const result = await uploadToConvex(selectedFile);
       if (result) {
-        onFileSelect({ ...selectedFile, ...result });
+        const fullFileData = { ...selectedFile, ...result };
+        setFile(fullFileData);
+        onFileSelect(fullFileData);
       }
     }
   };
@@ -95,10 +98,20 @@ const FileUpload = ({
 
   const handleButtonClick = () => fileInputRef.current?.click();
 
-  const removeFile = () => {
-    setFile(null);
-    setError(null);
-    fileInputRef.current.value = "";
+  // Delete file from Convex storage on click
+  const removeFile = async () => {
+    try {
+      if (file?.storageId) {
+        await deleteFile({ storageId: file.storageId });
+        console.log("File deleted from Convex");
+      }
+    } catch (err) {
+      console.error("Error deleting file:", err);
+    } finally {
+      setFile(null);
+      setError(null);
+      fileInputRef.current.value = "";
+    }
   };
 
   return (
@@ -131,7 +144,10 @@ const FileUpload = ({
             {uploading ? "Uploading..." : label}
           </p>
           <p className="text-sm text-dark-500">
-            Drag & drop your PDF, or click to browse
+            Drag & drop your PDF file here, or click to browse
+          </p>
+          <p className="text-xs text-dark-400 mt-2">
+            Maximum file size: {maxSize}MB
           </p>
         </motion.div>
       ) : (
@@ -153,6 +169,7 @@ const FileUpload = ({
             <button
               onClick={removeFile}
               className="p-2 text-dark-500 hover:text-error-500"
+              aria-label="Remove file"
             >
               <X size={20} />
             </button>
@@ -163,6 +180,7 @@ const FileUpload = ({
           </div>
         </motion.div>
       )}
+
       {error && (
         <p className="mt-2 text-sm text-error-500" role="alert">
           {error}
