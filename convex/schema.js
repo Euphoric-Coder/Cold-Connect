@@ -8,7 +8,7 @@ export default defineSchema({
     resumeURL: v.optional(v.string()),
     githubURL: v.optional(v.string()),
     hasOnboarded: v.boolean(),
-  }),
+  }).index("by_email", ["email"]),
 
   resumeFiles: defineTable({
     fileId: v.string(),

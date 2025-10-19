@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as uploadResume from "../uploadResume.js";
+import type * as users from "../users.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -25,6 +26,7 @@ import type * as uploadResume from "../uploadResume.js";
  */
 declare const fullApi: ApiFromModules<{
   uploadResume: typeof uploadResume;
+  users: typeof users;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
