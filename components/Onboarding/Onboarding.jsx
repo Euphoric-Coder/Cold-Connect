@@ -11,6 +11,8 @@ import {
   Shield,
 } from "lucide-react";
 import Button from "../../components/Button";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import FileUpload from "../../components/FileUpload";
 import { useUser } from "@clerk/nextjs";
 
@@ -26,6 +28,7 @@ const OnboardingPage = () => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const updateUser = useMutation(api.users.updateUser);
 
   useEffect(() => {
     if (user) {
@@ -76,8 +79,8 @@ const OnboardingPage = () => {
     }
   };
 
-  const handleResumeUpload = (file) => {
-    setFormData((prev) => ({ ...prev, resume: file }));
+  const handleResumeUpload = (fileData) => {
+    setFormData((prev) => ({ ...prev, resume: fileData }));
     if (errors.resume) {
       setErrors((prev) => ({ ...prev, resume: undefined }));
     }
@@ -93,18 +96,21 @@ const OnboardingPage = () => {
     setIsSubmitting(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      //   await updateUser({
+      //     name: formData.name,
+      //     email: formData.email,
+      //     githubURL: formData.githubUrl,
+      //     resumeURL: formData.resume.fileURL, // from uploaded file
+      //     hasOnboarded: true,
+      //   });
 
-      localStorage.setItem(
-        "coldconnect_user",
-        JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          githubUrl: formData.githubUrl,
-          portfolioUrl: formData.portfolioUrl,
-          resumeUploaded: true,
-        })
-      );
+      console.log({
+        name: formData.name,
+        email: formData.email,
+        githubURL: formData.githubUrl,
+        resumeURL: formData.resume.fileURL, // from uploaded file
+        hasOnboarded: true,
+      });
 
       router.push("/generator");
     } catch (error) {
@@ -336,9 +342,11 @@ const OnboardingPage = () => {
                 <div>
                   <FileUpload
                     onFileSelect={handleResumeUpload}
+                    createdBy={formData.email}
                     accept=".pdf"
                     label="Upload your resume (PDF format)"
                   />
+
                   {errors.resume && (
                     <p className="mt-3 text-sm text-error-500">
                       {errors.resume}
