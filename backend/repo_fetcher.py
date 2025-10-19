@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# --- CONFIG ---
+# CONFIG
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 if not GITHUB_TOKEN:
     raise ValueError("⚠️ Please set your GITHUB_TOKEN in the .env file")
@@ -15,9 +15,16 @@ BASE_URL = "https://api.github.com"
 HEADERS = {"Authorization": f"token {GITHUB_TOKEN}"}
 
 
-def fetch_readme(repo_full_name: str) -> str:
-    """Fetch and decode README.md content for a repo."""
-    url = f"{BASE_URL}/repos/{repo_full_name}/readme"
+def get_authenticated_user() -> str:
+    """Return the username of the authenticated user (for private repos)."""
+    resp = requests.get(f"{BASE_URL}/user", headers=HEADERS)
+    resp.raise_for_status()
+    return resp.json()["login"]
+
+
+def fetch_readme(full_name: str) -> str:
+    """Fetch README.md content for a repo."""
+    url = f"{BASE_URL}/repos/{full_name}/readme"
     resp = requests.get(url, headers=HEADERS)
     if resp.status_code != 200:
         return ""
@@ -29,23 +36,34 @@ def fetch_readme(repo_full_name: str) -> str:
 
 
 def list_repositories(github_url: str):
-    """Return list of repos with name, url, description, readme."""
+    """
+    Fetch both public and private repositories (if token allows),
+    returning minimal info for each: name, url, description, readme.
+    """
     username = github_url.rstrip("/").split("/")[-1]
+    auth_user = get_authenticated_user()
 
-    # Fetch public repositories only — fast and simple
-    repos_url = f"{BASE_URL}/users/{username}/repos"
-    response = requests.get(repos_url, headers=HEADERS, params={"per_page": 100})
+    # Include private repos if user == authenticated
+    if username.lower() == auth_user.lower():
+        repos_url = f"{BASE_URL}/user/repos"
+    else:
+        repos_url = f"{BASE_URL}/users/{username}/repos"
+
+    # Fetch up to 100 repos, public + private if allowed
+    response = requests.get(
+        repos_url, headers=HEADERS, params={"per_page": 100, "sort": "updated"}
+    )
     response.raise_for_status()
 
     repos = response.json()
     projects = []
 
     for repo in repos:
-        repo_full_name = repo["full_name"]
+        full_name = repo["full_name"]
         name = repo["name"]
         url = repo["html_url"]
         desc = repo.get("description") or ""
-        readme = fetch_readme(repo_full_name)
+        readme = fetch_readme(full_name)
 
         projects.append(
             {"name": name, "url": url, "description": desc, "readme": readme}
@@ -55,12 +73,7 @@ def list_repositories(github_url: str):
 
 
 if __name__ == "__main__":
-    github_url = "https://github.com/piyush-eon"  # Change this to your profile
+    github_url = "https://github.com/piyush-eon"  # Change this to your GitHub profile
     projects = list_repositories(github_url)
 
     print(json.dumps(projects, indent=2, ensure_ascii=False))
-
-    # with open("projects_min.json", "w", encoding="utf-8") as f:
-    #     json.dump(projects, f, indent=2, ensure_ascii=False)
-
-    # print("✅ Saved → projects_min.json")
