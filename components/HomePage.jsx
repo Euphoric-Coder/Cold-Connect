@@ -81,18 +81,18 @@ const HomePage = () => {
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <Button
-                  // to="/generate"
+                  to="/generate"
                   variant="primary"
                   size="md"
                   icon={Send}
                   className="rounded-3xl"
-                  onClick={() =>
-                    sendEmail(
-                      "deydsagnik@gmail.com",
-                      "Test Email",
-                      "<html><body><h1>This is a test email from ColdConnect!</h1><p>Generated using Gmail API and Clerk OAuth integration.</p></body></html>"
-                    )
-                  }
+                  // onClick={() =>
+                  //   sendEmail(
+                  //     "deydsagnik@gmail.com",
+                  //     "Test Email",
+                  //     "<html><body><h1>This is a test email from ColdConnect!</h1><p>Generated using Gmail API and Clerk OAuth integration.</p></body></html>"
+                  //   )
+                  // }
                 >
                   Start Generating Emails
                 </Button>
