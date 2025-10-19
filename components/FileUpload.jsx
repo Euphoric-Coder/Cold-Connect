@@ -111,6 +111,7 @@ const FileUpload = ({
       setFile(null);
       setError(null);
       fileInputRef.current.value = "";
+      onFileSelect(null);
     }
   };
 

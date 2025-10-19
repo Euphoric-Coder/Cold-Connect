@@ -109,6 +109,7 @@ const OnboardingPage = () => {
         email: formData.email,
         githubURL: formData.githubUrl,
         resumeURL: formData.resume.fileURL, // from uploaded file
+        portfolioUrl: formData.portfolioUrl,
         hasOnboarded: true,
       });
 
