@@ -12,11 +12,11 @@ export default defineSchema({
 
   resumeFiles: defineTable({
     fileId: v.string(),
-    storageId: v.string(),
+    storageId: v.string("_storage"),
     fileName: v.string(),
     fileURL: v.string(),
     createdBy: v.string(),
-  }),
+  }).index("by_storageId", ["storageId"]),
 
   // Table storing project metadata (reactive, used in UI)
   projects: defineTable({

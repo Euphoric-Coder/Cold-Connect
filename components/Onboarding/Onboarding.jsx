@@ -9,6 +9,7 @@ import {
   CheckCircle,
   Globe,
   Shield,
+  Linkedin,
 } from "lucide-react";
 import Button from "../../components/Button";
 import { useMutation, useQuery } from "convex/react";
@@ -24,6 +25,7 @@ const OnboardingPage = () => {
     email: "",
     githubUrl: "",
     portfolioUrl: "",
+    linkedinUrl: "",
     resume: null,
   });
   const [errors, setErrors] = useState({});
@@ -319,6 +321,39 @@ const OnboardingPage = () => {
                     )}
                     <p className="text-xs text-dark-500 dark:text-dark-400">
                       Showcase your complete projects and design skills
+                    </p>
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="block text-sm font-semibold text-dark-700 dark:text-dark-200">
+                      LinkedIn Profile
+                    </label>
+                    <div className="relative">
+                      <Linkedin
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-400 dark:text-dark-500"
+                        size={18}
+                      />
+                      <input
+                        type="url"
+                        className={`w-full pl-12 pr-4 py-4 bg-white dark:bg-dark-900 border rounded-xl transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
+                          errors.linkedinUrl
+                            ? "border-error-500 focus:ring-error-400"
+                            : "border-dark-200 dark:border-dark-600 focus:border-primary-400 focus:ring-primary-400"
+                        }`}
+                        placeholder="https://linkedin.com/in/yourprofile"
+                        value={formData.linkedinUrl}
+                        onChange={(e) =>
+                          handleInputChange("linkedinUrl", e.target.value)
+                        }
+                      />
+                    </div>
+                    {errors.linkedinUrl && (
+                      <p className="text-sm text-error-500">
+                        {errors.linkedinUrl}
+                      </p>
+                    )}
+                    <p className="text-xs text-dark-500 dark:text-dark-400">
+                      Professional network and career achievements
                     </p>
                   </div>
                 </div>

@@ -13,6 +13,7 @@ import Button from "./Button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ModeToggle } from "./ThemeButton";
+import Image from "next/image";
 
 const Navbar = () => {
   const { user, isSignedIn } = useUser();
@@ -60,7 +61,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between py-6">
           {/* Logo */}
           <Link href={"/"} className="flex items-center space-x-2">
-            <Mail className="h-8 w-8 text-primary-500" />
+            <Image src="/cold.png" alt="Logo" width={32} height={32} />
             <span className="font-heading font-bold text-xl">ColdConnect</span>
           </Link>
 
