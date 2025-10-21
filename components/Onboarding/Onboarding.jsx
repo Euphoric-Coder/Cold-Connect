@@ -37,6 +37,7 @@ const OnboardingPage = () => {
   const [showRestoreAlert, setShowRestoreAlert] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const updateUser = useMutation(api.users.updateUser);
+  const deleteFile = useMutation(api.resumeDelete.deleteById);
   const status = useQuery(api.users.onboardingStatus, {
     email: user?.emailAddresses[0]?.emailAddress,
   });
@@ -172,8 +173,11 @@ const OnboardingPage = () => {
     }
   };
 
-  const clearSavedData = () => {
+  const clearSavedData = async () => {
     if (!user?.id) return;
+    if (formData.resume) {
+      await deleteFile({ storageId: formData.resume.storageId });
+    }
     const key = `onboardingFormData_${user.id}`;
     localStorage.removeItem(key);
     setShowRestoreAlert(false);
