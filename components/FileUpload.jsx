@@ -250,7 +250,10 @@ const FileUpload = ({
               </div>
             </div>
             <button
-              onClick={removeFile}
+              onClick={(e) => {
+                e.preventDefault();
+                removeFile();
+              }}
               className="text-dark-500 hover:text-error-500 transition-colors"
               aria-label="Remove file"
             >

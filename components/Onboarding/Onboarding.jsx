@@ -21,6 +21,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import FileUpload from "../../components/FileUpload";
 import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 const OnboardingPage = () => {
   const router = useRouter();
@@ -95,26 +96,42 @@ const OnboardingPage = () => {
 
   const validateGithubUrl = (url) => {
     if (!url) return true;
-    const githubRegex = /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/?$/;
+    const githubRegex = /^https:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/?$/;
     return githubRegex.test(url);
   };
 
   const validatePortfolioUrl = (url) => {
     if (!url) return true;
-    const urlRegex =
-      /^https?:\/\/(www\.)?[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\/?.*$/;
-    return urlRegex.test(url);
+    const portfolioRegex = /^https:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/;
+    return portfolioRegex.test(url);
+  };
+
+  const validateLinkedinUrl = (url) => {
+    if (!url) return true;
+
+    // Matches linkedin.com/in/, linkedin.com/us/, linkedin.com/uk/, linkedin.com/de/, etc.
+    const linkedinRegex =
+      /^https:\/\/(www\.)?linkedin\.com\/([a-z]{2}|in)\/[a-zA-Z0-9_-]+\/?$/i;
+
+    return linkedinRegex.test(url);
   };
 
   const validateForm = () => {
     const newErrors = {};
 
     if (formData.githubUrl && !validateGithubUrl(formData.githubUrl)) {
-      newErrors.githubUrl = "Please enter a valid GitHub URL";
+      newErrors.githubUrl =
+        "Please enter a valid GitHub URL (e.g., https://github.com/username)";
     }
 
     if (formData.portfolioUrl && !validatePortfolioUrl(formData.portfolioUrl)) {
-      newErrors.portfolioUrl = "Please enter a valid portfolio URL";
+      newErrors.portfolioUrl =
+        "Please enter a valid portfolio URL (e.g., https://yourname.dev)";
+    }
+
+    if (formData.linkedinUrl && !validateLinkedinUrl(formData.linkedinUrl)) {
+      newErrors.linkedinUrl =
+        "Please enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)";
     }
 
     if (!formData.resume) {
@@ -122,6 +139,16 @@ const OnboardingPage = () => {
     }
 
     setErrors(newErrors);
+
+    // Optional: scroll to first error
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorField = Object.keys(newErrors)[0];
+      document.querySelector(`[name="${firstErrorField}"]`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -157,6 +184,7 @@ const OnboardingPage = () => {
       //     hasOnboarded: true,
       //   });
 
+      console.log("submitting...");
       console.log({
         name: formData.name,
         email: formData.email,
@@ -183,6 +211,13 @@ const OnboardingPage = () => {
     localStorage.removeItem(key);
     setShowRestoreAlert(false);
     setResetFile(true);
+    setFormData((prev) => ({
+      ...prev,
+      githubUrl: "",
+      portfolioUrl: "",
+      linkedinUrl: "",
+      resume: null,
+    }));
   };
 
   if (status === true) {
@@ -263,8 +298,8 @@ const OnboardingPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-primary rounded-2xl mb-6 shadow-lg">
-            <Mail className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center mb-6 ">
+            <Image src="/cold.png" alt="Logo" width={75} height={75} />
           </div>
           <h1 className="font-heading font-bold text-4xl md:text-5xl mb-4">
             Welcome to{" "}
@@ -381,6 +416,7 @@ const OnboardingPage = () => {
                         size={18}
                       />
                       <input
+                        name="githubUrl"
                         type="url"
                         className={`w-full pl-12 pr-4 py-4 bg-white dark:bg-dark-900 border rounded-xl transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
                           errors.githubUrl
@@ -414,6 +450,7 @@ const OnboardingPage = () => {
                         size={18}
                       />
                       <input
+                        name="portfolioUrl"
                         type="url"
                         className={`w-full pl-12 pr-4 py-4 bg-white dark:bg-dark-900 border rounded-xl transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
                           errors.portfolioUrl
@@ -447,6 +484,7 @@ const OnboardingPage = () => {
                         size={18}
                       />
                       <input
+                        name="linkedinUrl"
                         type="url"
                         className={`w-full pl-12 pr-4 py-4 bg-white dark:bg-dark-900 border rounded-xl transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
                           errors.linkedinUrl
