@@ -43,11 +43,33 @@ const OnboardingPage = () => {
 
   useEffect(() => {
     if (!user?.id) return;
+
     const key = `onboardingFormData_${user.id}`;
     const savedData = localStorage.getItem(key);
+
     if (savedData) {
-      setShowRestoreAlert(true);
-      setFormData(JSON.parse(savedData));
+      const parsedData = JSON.parse(savedData);
+
+      // Define default (empty) formData for comparison
+      const defaultForm = {
+        name: user?.fullName,
+        email: user?.emailAddresses[0]?.emailAddress,
+        githubUrl: "",
+        portfolioUrl: "",
+        linkedinUrl: "",
+        resume: null,
+      };
+
+      // Check if saved data differs from the default form
+      const isDifferent = Object.keys(defaultForm).some(
+        (key) =>
+          JSON.stringify(parsedData[key]) !== JSON.stringify(defaultForm[key])
+      );
+
+      if (isDifferent) {
+        setShowRestoreAlert(true);
+        setFormData(parsedData);
+      }
     }
   }, [user]);
 
@@ -203,7 +225,8 @@ const OnboardingPage = () => {
                        shadow-sm transition-all"
                   >
                     <p className="text-wrap break-words">
-                      It looks like you haven&apos;t already completed the onboarding process. Would you like to continue?
+                      It looks like you haven&apos;t already completed the
+                      onboarding process. Would you like to continue?
                     </p>
                   </div>
                 </AlertDescription>
