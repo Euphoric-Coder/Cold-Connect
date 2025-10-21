@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Upload,
   File,
@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
+import { useUser } from "@clerk/nextjs";
 
 const FileUpload = ({
   onFileSelect,
@@ -22,6 +23,7 @@ const FileUpload = ({
   label = "Upload your resume",
   createdBy,
 }) => {
+  const { user } = useUser();
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
@@ -37,6 +39,32 @@ const FileUpload = ({
   const getFileURL = useMutation(api.storeFile.getFileURL);
   const deleteFile = useMutation(api.resumeDelete.deleteById);
   const updateFileName = useMutation(api.uploadResume.updateFileName);
+
+  // Restore resume data from onboarding localStorage key
+  useEffect(() => {
+    if (!user?.id) return;
+    const key = `onboardingFormData_${user.id}`;
+    const savedData = localStorage.getItem(key);
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      if (parsed.resume) {
+        setFile(parsed.resume);
+        setEditedName(parsed.resume.name || parsed.resume.fileName || "");
+      }
+    }
+  }, [user]);
+
+  // Keep localStorage in sync when file changes
+  useEffect(() => {
+    if (!user?.id) return;
+    const key = `onboardingFormData_${user.id}`;
+    const savedData = localStorage.getItem(key);
+    if (!savedData || !file) return;
+
+    const parsed = JSON.parse(savedData);
+    const updated = { ...parsed, resume: file };
+    localStorage.setItem(key, JSON.stringify(updated));
+  }, [file, user]);
 
   const validateFile = (file) => {
     if (!file.type.match("application/pdf")) {
@@ -74,7 +102,7 @@ const FileUpload = ({
       });
 
       setUploading(false);
-      return { storageId, fileURL };
+      return { storageId, fileURL, name: selectedFile.name };
     } catch (err) {
       console.error("Error uploading file:", err);
       setError("Error uploading file. Try again.");
@@ -112,6 +140,17 @@ const FileUpload = ({
       if (file?.storageId) {
         await deleteFile({ storageId: file.storageId });
         console.log("File deleted from Convex");
+      }
+
+      // Update only the resume field in onboarding localStorage
+      if (user?.id) {
+        const key = `onboardingFormData_${user.id}`;
+        const saved = localStorage.getItem(key);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          parsed.resume = null;
+          localStorage.setItem(key, JSON.stringify(parsed));
+        }
       }
     } catch (err) {
       console.error("Error deleting file:", err);

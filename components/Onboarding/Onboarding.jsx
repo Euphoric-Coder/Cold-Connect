@@ -50,7 +50,7 @@ const OnboardingPage = () => {
     if (savedData) {
       const parsedData = JSON.parse(savedData);
 
-      // Define default (empty) formData for comparison
+      // Default Form
       const defaultForm = {
         name: user?.fullName,
         email: user?.emailAddresses[0]?.emailAddress,
@@ -63,6 +63,8 @@ const OnboardingPage = () => {
       // Check if saved data differs from the default form
       const isDifferent = Object.keys(defaultForm).some(
         (key) =>
+          parsedData[key] !== null &&
+          parsedData[key] !== "" &&
           JSON.stringify(parsedData[key]) !== JSON.stringify(defaultForm[key])
       );
 
@@ -80,7 +82,7 @@ const OnboardingPage = () => {
   }, [formData, user]);
 
   useEffect(() => {
-    if (user) {
+    if (user && !formData.name && !formData.email) {
       setFormData((prev) => ({
         ...prev,
         name: user.fullName || "",
@@ -167,16 +169,6 @@ const OnboardingPage = () => {
       console.error("Error submitting form:", error);
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const restoreSavedData = () => {
-    if (!user?.id) return;
-    const key = `onboardingFormData_${user.id}`;
-    const saved = localStorage.getItem(key);
-    if (saved) {
-      setFormData(JSON.parse(saved));
-      setShowRestoreAlert(false);
     }
   };
 
