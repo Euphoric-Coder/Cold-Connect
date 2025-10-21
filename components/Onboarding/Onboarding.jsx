@@ -10,7 +10,12 @@ import {
   Globe,
   Shield,
   Linkedin,
+  AlertTriangle,
+  X,
+  AlertCircle,
+  XCircle,
 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Button from "../../components/Button";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -29,11 +34,28 @@ const OnboardingPage = () => {
     resume: null,
   });
   const [errors, setErrors] = useState({});
+  const [showRestoreAlert, setShowRestoreAlert] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const updateUser = useMutation(api.users.updateUser);
   const status = useQuery(api.users.onboardingStatus, {
     email: user?.emailAddresses[0]?.emailAddress,
   });
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const key = `onboardingFormData_${user.id}`;
+    const savedData = localStorage.getItem(key);
+    if (savedData) {
+      setShowRestoreAlert(true);
+      setFormData(JSON.parse(savedData));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const key = `onboardingFormData_${user.id}`;
+    localStorage.setItem(key, JSON.stringify(formData));
+  }, [formData, user]);
 
   useEffect(() => {
     if (user) {
@@ -126,8 +148,25 @@ const OnboardingPage = () => {
     }
   };
 
-  if(status === true) {
-    return <div>Please complete the onboarding process.</div>
+  const restoreSavedData = () => {
+    if (!user?.id) return;
+    const key = `onboardingFormData_${user.id}`;
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      setFormData(JSON.parse(saved));
+      setShowRestoreAlert(false);
+    }
+  };
+
+  const clearSavedData = () => {
+    if (!user?.id) return;
+    const key = `onboardingFormData_${user.id}`;
+    localStorage.removeItem(key);
+    setShowRestoreAlert(false);
+  };
+
+  if (status === true) {
+    return <div>Please complete the onboarding process.</div>;
   }
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50/30 via-white to-secondary-50/30 dark:from-primary-950/30 dark:via-dark-900 dark:to-secondary-950/30 pt-24 pb-16">
@@ -141,6 +180,59 @@ const OnboardingPage = () => {
           }}
         />
       </div>
+
+      {showRestoreAlert && (
+        <div className="container mx-auto -mt-20">
+          <Alert
+            variant="warning"
+            className="mt-5 mb-5 bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-gray-800 dark:to-gray-700 border border-yellow-400 dark:border-gray-600 shadow-lg p-4 rounded-3xl flex items-center hover:shadow-xl"
+          >
+            {/* Content that grows to fill space */}
+            <div className="flex flex-col gap-2 flex-grow">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+                <AlertTitle className="text-yellow-700 text-sm md:text-lg dark:text-yellow-300 font-bold">
+                  Pending Onboarding - {user?.fullName}
+                </AlertTitle>
+              </div>
+              <div className="flex items-center gap-2">
+                <AlertDescription className="w-full">
+                  <div
+                    className="rounded-xl border border-yellow-300 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/10 
+                       px-4 py-3 text-sm sm:text-base text-justify leading-relaxed text-yellow-800 dark:text-yellow-200 
+                       shadow-sm transition-all"
+                  >
+                    <p className="text-wrap break-words">
+                      It looks like you haven&apos;t already completed the onboarding process. Would you like to continue?
+                    </p>
+                  </div>
+                </AlertDescription>
+                {/* Button on the right */}
+                <div className="flex flex-col md:flex-row items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="accept hover:bg-green-300 hover:text-green-700 dark:hover:text-green-400 [&_svg]:size-6"
+                    onClick={() => setShowRestoreAlert(false)}
+                  >
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    Continue
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="del3 hover:bg-red-300 hover:text-red-500 border-red-400 dark:border-red-600 [&_svg]:size-6"
+                    onClick={clearSavedData}
+                  >
+                    <XCircle className="h-4 w-4 mr-1" />
+                    Dismiss
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Alert>
+        </div>
+      )}
 
       <div className="container mx-auto px-4 md:px-8 max-w-4xl">
         {/* Header */}
