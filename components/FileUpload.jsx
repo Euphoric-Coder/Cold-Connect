@@ -22,6 +22,7 @@ const FileUpload = ({
   maxSize = 5,
   label = "Upload your resume",
   createdBy,
+  resetTrigger = false,
 }) => {
   const { user } = useUser();
   const [isDragging, setIsDragging] = useState(false);
@@ -53,6 +54,16 @@ const FileUpload = ({
       }
     }
   }, [user]);
+
+  // Clear file data when resetTrigger changes
+  useEffect(() => {
+    if (resetTrigger) {
+      setFile(null);
+      setEditedName("");
+      setError(null);
+      fileInputRef.current.value = "";
+    }
+  }, [resetTrigger]);
 
   // Keep localStorage in sync when file changes
   useEffect(() => {

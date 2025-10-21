@@ -36,6 +36,7 @@ const OnboardingPage = () => {
   const [errors, setErrors] = useState({});
   const [showRestoreAlert, setShowRestoreAlert] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resetFile, setResetFile] = useState(false);
   const updateUser = useMutation(api.users.updateUser);
   const deleteFile = useMutation(api.resumeDelete.deleteById);
   const status = useQuery(api.users.onboardingStatus, {
@@ -181,6 +182,7 @@ const OnboardingPage = () => {
     const key = `onboardingFormData_${user.id}`;
     localStorage.removeItem(key);
     setShowRestoreAlert(false);
+    setResetFile(true);
   };
 
   if (status === true) {
@@ -498,6 +500,7 @@ const OnboardingPage = () => {
                     createdBy={formData.email}
                     accept=".pdf"
                     label="Upload your resume (PDF format)"
+                    resetTrigger={resetFile}
                   />
 
                   {errors.resume && (
