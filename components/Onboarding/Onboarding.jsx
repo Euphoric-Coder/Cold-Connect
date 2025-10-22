@@ -22,6 +22,7 @@ import { api } from "@/convex/_generated/api";
 import FileUpload from "../../components/FileUpload";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
+import OnboardingSuccess from "./OnboardingSuccess";
 
 const OnboardingPage = () => {
   const router = useRouter();
@@ -221,7 +222,7 @@ const OnboardingPage = () => {
   };
 
   if (status === true) {
-    return <div>Please complete the onboarding process.</div>;
+    return <OnboardingSuccess />;
   }
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50/30 via-white to-secondary-50/30 dark:from-primary-950/30 dark:via-dark-900 dark:to-secondary-950/30 pt-24 pb-16">
