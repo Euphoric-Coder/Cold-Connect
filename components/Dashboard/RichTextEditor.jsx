@@ -24,7 +24,10 @@ const RichTextEditor = ({
 }) => {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        underline: false, // disable built-in underline
+        link: false, // disable built-in link
+      }),
       Underline,
       Link.configure({
         openOnClick: false,

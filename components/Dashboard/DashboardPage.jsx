@@ -22,7 +22,6 @@ import {
   CheckCircle,
   Clock,
   Send,
-  TrendingUp,
   BarChart3,
   Linkedin,
 } from "lucide-react";
@@ -206,7 +205,7 @@ const DashboardPage = () => {
 
   return (
     <>
-      <DashboardNavbar userName={profile?.name.split(" ")[0]} />
+      <DashboardNavbar userName={user?.fullName.split(" ")[0]} />
       <div className="min-h-screen bg-gradient-to-br from-dark-50 via-white to-primary-50/30 dark:from-dark-950 dark:via-dark-900 dark:to-primary-950/30">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5 dark:opacity-10">
