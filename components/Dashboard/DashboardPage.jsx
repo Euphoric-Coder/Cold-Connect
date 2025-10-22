@@ -39,6 +39,9 @@ const DashboardPage = () => {
   const userData = useQuery(api.users.getUserByEmail, {
     email: user?.emailAddresses[0]?.emailAddress,
   });
+  const emails = useQuery(api.emails.getEmailsByUser, {
+    createdBy: user?.emailAddresses[0]?.emailAddress,
+  });
   const [activeTab, setActiveTab] = useState("overview");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profile, setProfile] = useState();
@@ -51,6 +54,7 @@ const DashboardPage = () => {
     if (userData) {
       console.log("Fetched user details:", userData);
       setProfile(userData);
+      console.log("Emails:", emails);
     }
   }, [userData]);
 
