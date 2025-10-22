@@ -23,6 +23,7 @@ import FileUpload from "../../components/FileUpload";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import OnboardingSuccess from "./OnboardingSuccess";
+import { toast } from "sonner";
 
 const OnboardingPage = () => {
   const router = useRouter();
@@ -186,6 +187,9 @@ const OnboardingPage = () => {
         linkedinURL: formData.linkedinURL ?? undefined,
         hasOnboarded: true,
       });
+
+      const key = `onboardingFormData_${user.id}`;
+      localStorage.removeItem(key);
 
       toast.success("Onboarding Form submitted successfully!");
     } catch (error) {
