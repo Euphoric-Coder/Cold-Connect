@@ -30,10 +30,20 @@ export const getEmailsByUser = query({
     const emails = await ctx.db
       .query("emails")
       .withIndex("by_createdBy", (q) => q.eq("createdBy", createdBy))
-      .order("desc") // newest first
+      .order("desc")
       .collect();
 
-    return emails;
+    // Transform system fields to clean format
+    return emails.map((email) => ({
+      id: email._id,
+      createdAt: email._creationTime,
+      subject: email.subject,
+      content: email.content,
+      jobTitle: email.jobTitle,
+      company: email.company,
+      recipientEmail: email.recipientEmail,
+      status: email.status,
+      createdBy: email.createdBy,
+    }));
   },
 });
-

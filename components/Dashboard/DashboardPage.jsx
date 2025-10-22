@@ -54,52 +54,13 @@ const DashboardPage = () => {
     if (userData) {
       console.log("Fetched user details:", userData);
       setProfile(userData);
+      setGeneratedEmails(emails);
       console.log("Emails:", emails);
     }
   }, [userData]);
 
   // Mock data for generated emails with rich text content
-  const [generatedEmails, setGeneratedEmails] = useState([
-    {
-      id: "1",
-      subject: "Application for Senior Frontend Developer at TechCorp",
-      content: `<p>Dear Hiring Manager,</p><p>I hope this email finds you well. I recently came across the <strong>Senior Frontend Developer</strong> position at TechCorp on your <a href="https://techcorp.com/careers">careers page</a> and I'm excited to submit my application for consideration.</p><p>Here's why I believe I would be a valuable addition to your team:</p><ul><li><strong>5+ years</strong> of experience in React development</li><li>Proven track record of building <em>scalable web applications</em></li><li>Expert in modern JavaScript frameworks and libraries</li><li>Strong background in TypeScript and testing</li></ul><p>My key accomplishments include:</p><ol><li>Led development of a high-traffic e-commerce platform serving 1M+ users</li><li>Reduced page load times by 40% through optimization</li><li>Mentored junior developers and established best practices</li></ol><p>I would love to discuss how my experience aligns with TechCorp's vision. You can view my work at <a href="https://github.com/alexjohnson">github.com/alexjohnson</a> or my portfolio at <a href="https://alexjohnson.dev">alexjohnson.dev</a>.</p><p>Thank you for considering my application. I look forward to hearing from you.</p><p><strong>Best regards,</strong><br><em>Alex Johnson</em></p>`,
-      jobTitle: "Senior Frontend Developer",
-      company: "TechCorp",
-      createdAt: "2024-01-15T10:30:00Z",
-      status: "sent",
-      recipientEmail: "hiring@techcorp.com",
-    },
-    {
-      id: "2",
-      subject: "Interest in Full Stack Engineer Role at StartupXYZ",
-      content: `<p>Hello,</p><p>I am writing to express my <strong>strong interest</strong> in the Full Stack Engineer position at StartupXYZ. Your company's innovative approach to solving complex problems aligns perfectly with my passion for creating impactful solutions.</p><p><strong>What excites me about StartupXYZ:</strong></p><ul><li>Your commitment to cutting-edge technology</li><li>Fast-paced startup environment</li><li>Focus on user-centric design</li></ul><p>My technical expertise includes:</p><ol><li><strong>Frontend:</strong> React, Vue.js, TypeScript</li><li><strong>Backend:</strong> Node.js, Python, PostgreSQL</li><li><strong>DevOps:</strong> Docker, AWS, CI/CD pipelines</li></ol><p>I've successfully delivered projects that increased user engagement by <em>60%</em> and reduced operational costs significantly. Visit my <a href="https://alexjohnson.dev">portfolio</a> to see examples of my work.</p><p>Looking forward to discussing this opportunity further!</p><p><strong>Best,</strong><br>Alex Johnson</p>`,
-      jobTitle: "Full Stack Engineer",
-      company: "StartupXYZ",
-      createdAt: "2024-01-14T14:20:00Z",
-      status: "draft",
-    },
-    {
-      id: "3",
-      subject: "Application for React Developer Position at InnovateLab",
-      content: `<p>Dear Team,</p><p>I am <em>excited</em> to apply for the <strong>React Developer</strong> position at InnovateLab. Having followed your company's journey and impressive product launches, I am eager to contribute to your continued success.</p><p><strong>My relevant experience:</strong></p><ul><li>3+ years specializing in React and Redux</li><li>Built responsive, accessible web applications</li><li>Implemented state management solutions at scale</li><li>Strong focus on performance optimization</li></ul><p><strong>Recent achievements:</strong></p><ol><li>Architected a component library used across 10+ products</li><li>Improved application performance by 50%</li><li>Established testing standards with 90% coverage</li></ol><p>Check out my work on <a href="https://github.com/alexjohnson">GitHub</a> and connect with me on <a href="https://linkedin.com/in/alexjohnson">LinkedIn</a>.</p><p>Thank you for your time and consideration!</p><p><strong>Sincerely,</strong><br><em>Alex Johnson</em></p>`,
-      jobTitle: "React Developer",
-      company: "InnovateLab",
-      createdAt: "2024-01-13T09:15:00Z",
-      status: "sent",
-      recipientEmail: "careers@innovatelab.com",
-    },
-    {
-      id: "4",
-      subject: "Software Engineer Application - DevCompany",
-      content: `<p>Dear Hiring Manager,</p><p>I am reaching out regarding the <strong>Software Engineer</strong> position at DevCompany. Your commitment to clean code and agile development practices resonates with my professional values.</p><p><strong>Why I'm a great fit:</strong></p><ul><li>Strong foundation in computer science fundamentals</li><li>Experience with multiple programming languages</li><li>Passionate about code quality and testing</li><li>Active contributor to open-source projects</li></ul><p><strong>Technical skills:</strong></p><ol><li><strong>Languages:</strong> JavaScript, TypeScript, Python, Go</li><li><strong>Frameworks:</strong> React, Node.js, Django</li><li><strong>Tools:</strong> Git, Docker, Kubernetes</li></ol><p>My approach to development emphasizes:</p><ul><li><em>Clean, maintainable code</em></li><li><em>Comprehensive testing</em></li><li><em>Continuous improvement</em></li></ul><p>I'd love to discuss how I can contribute to DevCompany's mission. Please visit my <a href="https://alexjohnson.dev">portfolio</a> to see my recent projects.</p><p><strong>Best regards,</strong><br>Alex Johnson</p>`,
-      jobTitle: "Software Engineer",
-      company: "DevCompany",
-      createdAt: "2024-01-12T16:45:00Z",
-      status: "sent",
-      recipientEmail: "jobs@devcompany.io",
-    },
-  ]);
+  const [generatedEmails, setGeneratedEmails] = useState([]);
 
   const [openInEditMode, setOpenInEditMode] = useState(false);
 
