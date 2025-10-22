@@ -7,6 +7,8 @@ export default defineSchema({
     email: v.string(),
     resumeURL: v.optional(v.string()),
     githubURL: v.optional(v.string()),
+    portfolioURL: v.optional(v.string()),
+    linkedinURL: v.optional(v.string()),
     hasOnboarded: v.boolean(),
   }).index("by_email", ["email"]),
 

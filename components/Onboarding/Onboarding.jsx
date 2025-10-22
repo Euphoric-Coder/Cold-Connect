@@ -30,9 +30,9 @@ const OnboardingPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    githubUrl: "",
-    portfolioUrl: "",
-    linkedinUrl: "",
+    githubURL: "",
+    portfolioURL: "",
+    linkedinURL: "",
     resume: null,
   });
   const [errors, setErrors] = useState({});
@@ -58,9 +58,9 @@ const OnboardingPage = () => {
       const defaultForm = {
         name: user?.fullName,
         email: user?.emailAddresses[0]?.emailAddress,
-        githubUrl: "",
-        portfolioUrl: "",
-        linkedinUrl: "",
+        githubURL: "",
+        portfolioURL: "",
+        linkedinURL: "",
         resume: null,
       };
 
@@ -95,19 +95,19 @@ const OnboardingPage = () => {
     }
   }, [user]);
 
-  const validateGithubUrl = (url) => {
+  const validategithubURL = (url) => {
     if (!url) return true;
     const githubRegex = /^https:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/?$/;
     return githubRegex.test(url);
   };
 
-  const validatePortfolioUrl = (url) => {
+  const validateportfolioURL = (url) => {
     if (!url) return true;
     const portfolioRegex = /^https:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/;
     return portfolioRegex.test(url);
   };
 
-  const validateLinkedinUrl = (url) => {
+  const validatelinkedinURL = (url) => {
     if (!url) return true;
 
     // Matches linkedin.com/in/, linkedin.com/us/, linkedin.com/uk/, linkedin.com/de/, etc.
@@ -120,18 +120,18 @@ const OnboardingPage = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (formData.githubUrl && !validateGithubUrl(formData.githubUrl)) {
-      newErrors.githubUrl =
+    if (formData.githubURL && !validategithubURL(formData.githubURL)) {
+      newErrors.githubURL =
         "Please enter a valid GitHub URL (e.g., https://github.com/username)";
     }
 
-    if (formData.portfolioUrl && !validatePortfolioUrl(formData.portfolioUrl)) {
-      newErrors.portfolioUrl =
+    if (formData.portfolioURL && !validateportfolioURL(formData.portfolioURL)) {
+      newErrors.portfolioURL =
         "Please enter a valid portfolio URL (e.g., https://yourname.dev)";
     }
 
-    if (formData.linkedinUrl && !validateLinkedinUrl(formData.linkedinUrl)) {
-      newErrors.linkedinUrl =
+    if (formData.linkedinURL && !validatelinkedinURL(formData.linkedinURL)) {
+      newErrors.linkedinURL =
         "Please enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)";
     }
 
@@ -177,27 +177,20 @@ const OnboardingPage = () => {
     setIsSubmitting(true);
 
     try {
-      //   await updateUser({
-      //     name: formData.name,
-      //     email: formData.email,
-      //     githubURL: formData.githubUrl,
-      //     resumeURL: formData.resume.fileURL, // from uploaded file
-      //     hasOnboarded: true,
-      //   });
-
-      console.log("submitting...");
-      console.log({
+      await updateUser({
         name: formData.name,
         email: formData.email,
-        githubURL: formData.githubUrl,
-        resumeURL: formData.resume.fileURL, // from uploaded file
-        portfolioUrl: formData.portfolioUrl,
+        githubURL: formData.githubURL ?? undefined,
+        resumeURL: formData.resume.fileURL ?? undefined, // from uploaded file
+        portfolioURL: formData.portfolioURL ?? undefined,
+        linkedinURL: formData.linkedinURL ?? undefined,
         hasOnboarded: true,
       });
 
-      // router.push("/dashboard");
+      toast.success("Onboarding Form submitted successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error("Failed to submit form. Please try again.", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -214,9 +207,9 @@ const OnboardingPage = () => {
     setResetFile(true);
     setFormData((prev) => ({
       ...prev,
-      githubUrl: "",
-      portfolioUrl: "",
-      linkedinUrl: "",
+      githubURL: "",
+      portfolioURL: "",
+      linkedinURL: "",
       resume: null,
     }));
   };
@@ -417,23 +410,23 @@ const OnboardingPage = () => {
                         size={18}
                       />
                       <input
-                        name="githubUrl"
+                        name="githubURL"
                         type="url"
                         className={`w-full pl-12 pr-4 py-4 bg-white dark:bg-dark-900 border rounded-xl transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
-                          errors.githubUrl
+                          errors.githubURL
                             ? "border-error-500 focus:ring-error-400"
                             : "border-dark-200 dark:border-dark-600 focus:border-primary-400 focus:ring-primary-400"
                         }`}
                         placeholder="https://github.com/yourusername"
-                        value={formData.githubUrl}
+                        value={formData.githubURL}
                         onChange={(e) =>
-                          handleInputChange("githubUrl", e.target.value)
+                          handleInputChange("githubURL", e.target.value)
                         }
                       />
                     </div>
-                    {errors.githubUrl && (
+                    {errors.githubURL && (
                       <p className="text-sm text-error-500">
-                        {errors.githubUrl}
+                        {errors.githubURL}
                       </p>
                     )}
                     <p className="text-xs text-dark-500 dark:text-dark-400">
@@ -451,23 +444,23 @@ const OnboardingPage = () => {
                         size={18}
                       />
                       <input
-                        name="portfolioUrl"
+                        name="portfolioURL"
                         type="url"
                         className={`w-full pl-12 pr-4 py-4 bg-white dark:bg-dark-900 border rounded-xl transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
-                          errors.portfolioUrl
+                          errors.portfolioURL
                             ? "border-error-500 focus:ring-error-400"
                             : "border-dark-200 dark:border-dark-600 focus:border-primary-400 focus:ring-primary-400"
                         }`}
                         placeholder="https://yourportfolio.com"
-                        value={formData.portfolioUrl}
+                        value={formData.portfolioURL}
                         onChange={(e) =>
-                          handleInputChange("portfolioUrl", e.target.value)
+                          handleInputChange("portfolioURL", e.target.value)
                         }
                       />
                     </div>
-                    {errors.portfolioUrl && (
+                    {errors.portfolioURL && (
                       <p className="text-sm text-error-500">
-                        {errors.portfolioUrl}
+                        {errors.portfolioURL}
                       </p>
                     )}
                     <p className="text-xs text-dark-500 dark:text-dark-400">
@@ -485,23 +478,23 @@ const OnboardingPage = () => {
                         size={18}
                       />
                       <input
-                        name="linkedinUrl"
+                        name="linkedinURL"
                         type="url"
                         className={`w-full pl-12 pr-4 py-4 bg-white dark:bg-dark-900 border rounded-xl transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
-                          errors.linkedinUrl
+                          errors.linkedinURL
                             ? "border-error-500 focus:ring-error-400"
                             : "border-dark-200 dark:border-dark-600 focus:border-primary-400 focus:ring-primary-400"
                         }`}
                         placeholder="https://linkedin.com/in/yourprofile"
-                        value={formData.linkedinUrl}
+                        value={formData.linkedinURL}
                         onChange={(e) =>
-                          handleInputChange("linkedinUrl", e.target.value)
+                          handleInputChange("linkedinURL", e.target.value)
                         }
                       />
                     </div>
-                    {errors.linkedinUrl && (
+                    {errors.linkedinURL && (
                       <p className="text-sm text-error-500">
-                        {errors.linkedinUrl}
+                        {errors.linkedinURL}
                       </p>
                     )}
                     <p className="text-xs text-dark-500 dark:text-dark-400">

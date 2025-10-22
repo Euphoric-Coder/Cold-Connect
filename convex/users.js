@@ -7,9 +7,11 @@ export const updateUser = mutation({
     email: v.string(),
     resumeURL: v.optional(v.string()),
     githubURL: v.optional(v.string()),
+    portfolioURL: v.optional(v.string()),
+    linkedinURL: v.optional(v.string()),
     hasOnboarded: v.optional(v.boolean()),
   },
-  handler: async (ctx, { name, email, resumeURL, githubURL, hasOnboarded }) => {
+  handler: async (ctx, { name, email, resumeURL, githubURL, portfolioURL, linkedinURL, hasOnboarded }) => {
     // Check if user exists by email
     const existingUser = await ctx.db
       .query("users")
@@ -22,6 +24,8 @@ export const updateUser = mutation({
         name,
         ...(resumeURL !== undefined && { resumeURL }),
         ...(githubURL !== undefined && { githubURL }),
+        ...(portfolioURL !== undefined && { portfolioURL }),
+        ...(linkedinURL !== undefined && { linkedinURL }),
         ...(hasOnboarded !== undefined && { hasOnboarded }),
       });
       return existingUser._id;
@@ -33,6 +37,8 @@ export const updateUser = mutation({
       email,
       resumeURL: resumeURL ?? undefined,
       githubURL: githubURL ?? undefined,
+      portfolioURL: portfolioURL ?? undefined,
+      linkedinURL: linkedinURL ?? undefined,
       hasOnboarded: hasOnboarded ?? false,
     });
 

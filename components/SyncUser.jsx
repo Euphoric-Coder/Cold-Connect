@@ -20,8 +20,10 @@ export default function SyncUser() {
         await updateUser({
           name: `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(),
           email: user.emailAddresses[0]?.emailAddress ?? "",
-          resumeURL: user.publicMetadata?.resumeURL ?? undefined,
-          githubURL: user.publicMetadata?.githubURL ?? undefined,
+          resumeURL: undefined,
+          githubURL: undefined,
+          portfolioURL: undefined,
+          linkedinURL: undefined,
           hasOnboarded: status,
         });
       } catch (error) {
