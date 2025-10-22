@@ -31,7 +31,7 @@ import EmailModal from "./EmailDialog";
 import DashboardNavbar from "./DashboardNavbar";
 import Button from "../Button";
 import { useUser } from "@clerk/nextjs";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 const DashboardPage = () => {
@@ -42,6 +42,7 @@ const DashboardPage = () => {
   const emails = useQuery(api.emails.getEmailsByUser, {
     createdBy: user?.emailAddresses[0]?.emailAddress,
   });
+  const updateEmail = useMutation(api.emails.updateEmail);
   const [activeTab, setActiveTab] = useState("overview");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profile, setProfile] = useState();
@@ -52,12 +53,15 @@ const DashboardPage = () => {
 
   useEffect(() => {
     if (userData) {
-      console.log("Fetched user details:", userData);
       setProfile(userData);
-      setGeneratedEmails(emails);
-      console.log("Emails:", emails);
     }
   }, [userData]);
+
+  useEffect(() => {
+    if (emails) {
+      setGeneratedEmails(emails);
+    }
+  }, [emails]);
 
   // Mock data for generated emails with rich text content
   const [generatedEmails, setGeneratedEmails] = useState([]);
@@ -82,7 +86,6 @@ const DashboardPage = () => {
   const handleProfileSave = () => {
     setProfile(editedProfile);
     setIsEditingProfile(false);
-    // Here you would typically save to backend
   };
 
   const handleProfileCancel = () => {
@@ -118,16 +121,14 @@ const DashboardPage = () => {
     jobTitle,
     recipientEmail
   ) => {
-    console.log(
-      `Email saved with ID: ${id}, Subject: ${subject}, Content: ${content}, Company: ${company}, Job Title: ${jobTitle}, Recipient Email: ${recipientEmail}`
-    );
-    setGeneratedEmails((prev) =>
-      prev.map((email) =>
-        email.id === id
-          ? { ...email, subject, content, company, jobTitle, recipientEmail }
-          : email
-      )
-    );
+    updateEmail({
+      id,
+      subject,
+      content,
+      company,
+      jobTitle,
+      recipientEmail,
+    });
   };
 
   const copyEmailContent = async (email, event) => {
