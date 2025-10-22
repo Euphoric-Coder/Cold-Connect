@@ -118,6 +118,9 @@ const DashboardPage = () => {
     jobTitle,
     recipientEmail
   ) => {
+    console.log(
+      `Email saved with ID: ${id}, Subject: ${subject}, Content: ${content}, Company: ${company}, Job Title: ${jobTitle}, Recipient Email: ${recipientEmail}`
+    );
     setGeneratedEmails((prev) =>
       prev.map((email) =>
         email.id === id
