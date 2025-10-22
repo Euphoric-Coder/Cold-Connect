@@ -188,14 +188,13 @@ const OnboardingPage = () => {
         hasOnboarded: true,
       });
 
-      const key = `onboardingFormData_${user.id}`;
-      localStorage.removeItem(key);
-
       toast.success("Onboarding Form submitted successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to submit form. Please try again.", error);
     } finally {
+      const key = `onboardingFormData_${user.id}`;
+      localStorage.removeItem(key);
       setIsSubmitting(false);
     }
   };
