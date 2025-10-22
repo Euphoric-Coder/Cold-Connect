@@ -11,7 +11,18 @@ export const updateUser = mutation({
     linkedinURL: v.optional(v.string()),
     hasOnboarded: v.optional(v.boolean()),
   },
-  handler: async (ctx, { name, email, resumeURL, githubURL, portfolioURL, linkedinURL, hasOnboarded }) => {
+  handler: async (
+    ctx,
+    {
+      name,
+      email,
+      resumeURL,
+      githubURL,
+      portfolioURL,
+      linkedinURL,
+      hasOnboarded,
+    }
+  ) => {
     // Check if user exists by email
     const existingUser = await ctx.db
       .query("users")
@@ -64,5 +75,30 @@ export const onboardingStatus = query({
 
     // Return onboarding status
     return user.hasOnboarded;
+  },
+});
+
+// Get user details by email
+export const getUserByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, { email }) => {
+    // Look up the user by email index
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .first();
+
+    // Return null if user doesn't exist
+    if (!user) return null;
+
+    // Return user details
+    return {
+      name: user.name,
+      email: user.email,
+      resumeURL: user.resumeURL ?? null,
+      githubURL: user.githubURL ?? null,
+      portfolioURL: user.portfolioURL ?? null,
+      linkedinURL: user.linkedinURL ?? null,
+    };
   },
 });
