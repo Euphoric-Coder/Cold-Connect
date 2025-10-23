@@ -27,16 +27,16 @@ export default defineSchema({
     description: v.string(),
     skills: v.array(v.string()),
     projectURL: v.string(),
-    embeddingId: v.optional(v.id("projectEmbeddings")), // link to embedding row
     createdAt: v.number(), // Date.now()
   }).index("by_userEmail", ["userEmail"]),
 
-  // Separate table for embeddings (big vectors live here)
-  projectEmbeddings: defineTable({
-    embedding: v.array(v.float64()), // Gemini embedding vector
-    userEmail: v.string(), // same Clerk user Email
-    projectId: v.id("projects"), // reference back to the project
-  }).vectorIndex("by_embedding", {
+  // Table for embeddings (big vectors live here)
+  documents: defineTable({
+    text: v.string(),
+    embedding: v.array(v.number()), // Gemini embedding vector
+    userEmail: v.optional(v.string()), // Clerk user ID
+    metadata: v.any(),
+  }).vectorIndex("byEmbedding", {
     vectorField: "embedding",
     dimensions: 768,
     filterFields: ["userEmail"],
@@ -53,7 +53,7 @@ export default defineSchema({
       v.literal("draft"),
       v.literal("sent"),
       v.literal("failed"),
-      v.literal("resend") 
+      v.literal("resend")
     ),
     createdBy: v.string(), // User email of sender
   }).index("by_createdBy", ["createdBy"]),

@@ -14,6 +14,8 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as emails from "../emails.js";
+import type * as langchain_db from "../langchain/db.js";
+import type * as projects from "../projects.js";
 import type * as resumeDelete from "../resumeDelete.js";
 import type * as storeFile from "../storeFile.js";
 import type * as uploadResume from "../uploadResume.js";
@@ -29,6 +31,8 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   emails: typeof emails;
+  "langchain/db": typeof langchain_db;
+  projects: typeof projects;
   resumeDelete: typeof resumeDelete;
   storeFile: typeof storeFile;
   uploadResume: typeof uploadResume;
