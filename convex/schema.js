@@ -20,13 +20,15 @@ export default defineSchema({
     createdBy: v.string(),
   }).index("by_storageId", ["storageId"]),
 
-  // Table storing project metadata (reactive, used in UI)
+  // Table storing project metadata
   projects: defineTable({
     userEmail: v.string(), // Clerk user ID
     projectName: v.string(),
     description: v.string(),
     skills: v.array(v.string()),
     projectURL: v.string(),
+    category: v.string(), // "Full Stack", "AI/ML", "Data Science", etc.
+    domain: v.optional(v.string()), // "Finance", "Healthcare", "Education"
     createdAt: v.number(), // Date.now()
   }).index("by_userEmail", ["userEmail"]),
 
